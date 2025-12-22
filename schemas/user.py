@@ -22,3 +22,11 @@ class UserSchemaResponse (BaseModel):
     class Config:
         from_attributes = True
 
+class UserSchemaLogin (BaseModel):
+
+    username:str
+    password:str
+
+    class Config:
+        from_attributes = True
+
