@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Boolean, DateTime
+from sqlalchemy import Column, String, Integer, Boolean, Date
 import datetime as dt
 from database.session import Base
 
@@ -10,4 +10,4 @@ class User (Base):
     password_hash = Column("password", String)
     is_activate = Column("activate", Boolean, default=True)
     is_admin = Column("admin", Boolean, default=False)
-    create_at = Column("create_at", DateTime(timezone=True), default=lambda: dt.datetime.now(tz=dt.timezone.utc))
+    create_at = Column("create_at", Date, default=lambda: dt.date.today())
