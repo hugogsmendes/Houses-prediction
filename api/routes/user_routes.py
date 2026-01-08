@@ -4,7 +4,7 @@ from utils.dependencies import get_user_service, get_user
 from schemas.user import UserSchemaPost, UserSchemaResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
-user_router = APIRouter(prefix="api/v1/user", tags=["user"])
+user_router = APIRouter(prefix="/api/v1/user", tags=["user"])
 
 @user_router.post("/create", response_model=UserSchemaResponse, status_code=201)
 async def create (user_post: UserSchemaPost,service: User_Service = Depends(get_user_service)):
@@ -13,3 +13,7 @@ async def create (user_post: UserSchemaPost,service: User_Service = Depends(get_
 @user_router.post("/login", status_code=200)
 async def login (user_login : OAuth2PasswordRequestForm = Depends(), service: User_Service = Depends(get_user_service)):
     return service.login(user_login)
+
+@user_router.get("/list", status_code=200, response_model=list[UserSchemaResponse])
+async def list_users (service: User_Service = Depends(get_user_service), current_user: dict = Depends(get_user)):
+    return service.list_all()

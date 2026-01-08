@@ -32,4 +32,5 @@ class User_Service:
             "token_type": "Bearer"
         }
 
-
+    def list_all (self):
+        return self.repository.list_users()

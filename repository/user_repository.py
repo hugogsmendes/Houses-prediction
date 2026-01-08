@@ -17,3 +17,6 @@ class User_Repository:
         self.session.commit()
         self.session.refresh(new_user)
         return new_user
+    
+    def list_all (self):
+        return self.session.query(User).all()
