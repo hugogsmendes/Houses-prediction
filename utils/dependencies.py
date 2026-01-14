@@ -4,7 +4,7 @@ from database.session import SessionLocal
 from repository.user_repository import User_Repository
 from service.user_service import User_Service
 from utils.security import ouath2_schema, verify_token
-from utils.exceptions import Unauthorized
+from utils.exceptions import Unauthorized, NotPermission
 
 def get_session (): # Pega a sessão do BD
     try:
@@ -33,5 +33,14 @@ def get_user (token: str = Depends(ouath2_schema)): # FastAPI pega o token do he
     return {
         "username": username
     }
+
+def get_user_adm (current_user: dict = Depends(get_user), user_service: User_Service = Depends(get_user_service)):
+
+    user = user_service.repository.find_by_username(current_user.get("username"))
+
+    if not user.is_admin:
+        raise NotPermission
+    
+    return
 
 

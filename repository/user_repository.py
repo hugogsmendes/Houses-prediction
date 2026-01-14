@@ -20,3 +20,7 @@ class User_Repository:
     
     def list_all (self):
         return self.session.query(User).all()
+    
+    def delete (self, user:User) -> None:
+        self.session.delete(user)
+        self.session.commit()

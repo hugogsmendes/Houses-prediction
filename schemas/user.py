@@ -8,7 +8,6 @@ class UserSchemaPost(BaseModel):
     password: str
     is_activate: bool = True
     is_admin: bool = False
-
     class Config:
         from_attributes = True
 
@@ -18,7 +17,6 @@ class UserSchemaResponse (BaseModel):
     is_activate: bool
     is_admin: bool
     create_at : date
-
     class Config:
         from_attributes = True
 
@@ -26,6 +24,34 @@ class UserSchemaLogin (BaseModel):
 
     username:str
     password:str
+    class Config:
+        from_attributes = True
+class UserCreate (BaseModel):
+
+    message: str
+    user: UserSchemaResponse
+    class Config:
+        from_attributes = True
+
+class UserLogin (BaseModel):
+    
+    message: str
+    access_token: str
+    refresh_token: str
+    token_type: str
+    user: UserSchemaResponse
+    class Config:
+        from_attributes = True
+
+class UserSchemaDelete (BaseModel):
+
+    username: str
+    class Config:
+        from_attributes = True
+
+class UserDelete (BaseModel):
+
+    message: str
 
     class Config:
         from_attributes = True
