@@ -10,8 +10,9 @@ class User_Repository:
     def find_by_username (self, username:str) -> User:
         return self.session.query(User).filter(func.lower(User.username) == func.lower(username)).first()
     
-    def create (self, user_post:UserSchemaPost) -> User:
-        new_user = User(username=user_post.username, password_hash=hash_password(user_post.password))
+    def create (self, user_post:UserSchemaPost, is_admin=False) -> User:
+        new_user = User(username=user_post.username, password_hash=hash_password(user_post.password), 
+                        is_admin=is_admin)
         self.session.add(new_user)
         self.session.commit()
         self.session.refresh(new_user)

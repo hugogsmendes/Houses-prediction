@@ -54,4 +54,4 @@ def verify_token (token:str): # função para verificar um token jwt
         return payload
     except JWTError:
         return None
-
+    

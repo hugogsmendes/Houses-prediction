@@ -5,6 +5,7 @@ from repository.user_repository import User_Repository
 from service.user_service import User_Service
 from utils.security import ouath2_schema, verify_token
 from utils.exceptions import Unauthorized, NotPermission
+from schemas.user import RefreshToken
 
 def get_session (): # Pega a sessão do BD
     try:
@@ -43,4 +44,16 @@ def get_user_adm (current_user: dict = Depends(get_user), user_service: User_Ser
     
     return
 
+def verify_refresh_token (token: RefreshToken, current_user:dict):
+    
+    payload = verify_token(token.refresh_token)
 
+    if not payload or payload.get("type") != "refresh":
+        raise Unauthorized(detail="Token inválido ou expirado")
+    
+    username = payload.get("sub")
+    current_username = current_user.get("username")
+    if username != current_username:
+        raise Unauthorized(detail="Usuário inválido")
+    
+    return username
