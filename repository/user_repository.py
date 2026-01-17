@@ -11,8 +11,7 @@ class User_Repository:
         return self.session.query(User).filter(func.lower(User.username) == func.lower(username)).first()
     
     def create (self, user_post:UserSchemaPost) -> User:
-        new_user = User(username=user_post.username, password_hash=hash_password(user_post.password),
-                        is_activate=user_post.is_activate, is_admin=user_post.is_admin)
+        new_user = User(username=user_post.username, password_hash=hash_password(user_post.password))
         self.session.add(new_user)
         self.session.commit()
         self.session.refresh(new_user)

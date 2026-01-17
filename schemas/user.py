@@ -6,7 +6,13 @@ class UserSchemaPost(BaseModel):
 
     username: str
     password: str
-    is_activate: bool = True
+    class Config:
+        from_attributes = True
+
+class UserAdminSchemaPost(BaseModel):
+
+    username: str
+    password: str
     is_admin: bool = False
     class Config:
         from_attributes = True
