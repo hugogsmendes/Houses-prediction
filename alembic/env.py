@@ -24,6 +24,7 @@ if config.config_file_name is not None:
 from database.session import Base
 
 from models.users import User
+from models.predictions import Prediction
 
 target_metadata = Base.metadata
 
