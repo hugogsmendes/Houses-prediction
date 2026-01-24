@@ -20,5 +20,6 @@ class Prediction (Base):
     area_preferencial = Column("area_preferencial", Integer) # Variável binária
     status_mobilia_sem_mobilia = Column("status_mobilia_sem_mobilia", Integer) # Variável binária
     status_mobilia_semi_mobiliada = Column("status_mobilia_semi_mobiliada", Integer) # Variável binária
+    preco_previsto = Column("preco_previsto", Float) # Preço previsto pelo modelo
 
     user = Relationship("User", back_populates="predictions", lazy="subquery")
