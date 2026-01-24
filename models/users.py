@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, Integer, Boolean, Date
 import datetime as dt
 from database.session import Base
+from sqlalchemy.orm import Relationship
 
 class User (Base):
     __tablename__ = "users"
@@ -11,3 +12,4 @@ class User (Base):
     is_activate = Column("activate", Boolean, default=True)
     is_admin = Column("admin", Boolean, default=False)
     create_at = Column("create_at", Date, default=lambda: dt.date.today())
+    predictions = Relationship("Prediction", back_populates="user", lazy="subquery")

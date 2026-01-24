@@ -6,4 +6,4 @@ class Model_Repository:
         self.session = session
 
     def create (self):
-        prediction = Prediction()
+        ...
