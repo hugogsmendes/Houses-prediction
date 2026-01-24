@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from database.session import SessionLocal
 from repository.user_repository import User_Repository
 from service.user_service import User_Service
+from repository.model_repository import Model_Repository
+from service.model_service import Model_Service
 from utils.security import ouath2_schema, verify_token
 from utils.exceptions import Unauthorized, NotPermission
 from schemas.user import RefreshToken
@@ -19,6 +21,12 @@ def get_user_repository (session: Session = Depends(get_session)): # Injeta a se
 
 def get_user_service (repository: User_Repository = Depends(get_user_repository)): # Injeta o repository em service para que o service use a camada repository
     return User_Service(repository=repository)
+
+def get_model_repository (session: Session = Depends(get_session)):
+    return Model_Repository(session=session)
+
+def get_model_service (repository: Model_Repository = Depends(get_model_repository)):
+    return Model_Service(repository=repository)
 
 def get_user (token: str = Depends(ouath2_schema)): # FastAPI pega o token do header e injeta ele na função
 
