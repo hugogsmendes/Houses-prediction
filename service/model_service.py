@@ -19,8 +19,8 @@ class Model_Service:
         _data_predict = data_predict.model_dump() # transforma para dicionário
         try:
             x = pd.DataFrame([_data_predict])
-            x.rename(columns={"status_mobilia_sem_mobilia": "status_mobilia_sem-mobilia",
-                              "status_mobilia_semi_mobiliada": "status_mobilia_semi-mobiliada"}, inplace=True)
+            x.rename(columns={"status_mobilia_sem-mobilia": "status_mobilia_sem-mobilia",
+                              "status_mobilia_semi-mobiliada": "status_mobilia_semi-mobiliada"}, inplace=True)
             
             model_svr = joblib.load('models_ml/model_svr_v1.joblib')
             preco_previsto = model_svr.predict(x)

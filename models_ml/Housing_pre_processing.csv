@@ -1,4 +1,4 @@
-preco,area,quartos,banheiros,andares,acesso_rodovia,quarto_hospede,porao,aquecimento_agua,ar_condicionado,vagas_estacionamento,area_preferencial,status_mobilia_sem-mobilia,status_mobilia_semi-mobiliada
+preco,area,quartos,banheiros,andares,acesso_rodovia,quarto_hospede,porao,aquecimento_agua,ar_condicionado,vagas_estacionamento,area_preferencial,status_mobilia_sem_mobilia,status_mobilia_semi_mobiliada
 13300000,689.318,4,2,3,1,0,0,0,1,2,1,0,0
 12250000,832.384,4,4,4,1,0,0,0,1,3,0,0,0
 12250000,925.284,3,2,2,1,0,1,0,0,2,1,0,1
