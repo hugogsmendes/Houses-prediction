@@ -1,5 +1,7 @@
 from repository.model_repository import Model_Repository
 import joblib
+import os
+from utils.exceptions import ModelUnavailable, Incompatibility
 import pandas as pd
 from schemas.model import ModelSchemaPost, PredictPriceResponse
 
@@ -15,21 +17,28 @@ class Model_Service:
     def __init__(self, repository: Model_Repository):
         self.repository = repository
 
-    def predict (self, data_predict: ModelSchemaPost) -> PredictPriceResponse:
+    def predict (self, data_predict: ModelSchemaPost, user_id: int) -> PredictPriceResponse:
         _data_predict = data_predict.model_dump() # transforma para dicionário
         try:
             x = pd.DataFrame([_data_predict])
-            x.rename(columns={"status_mobilia_sem-mobilia": "status_mobilia_sem-mobilia",
-                              "status_mobilia_semi-mobiliada": "status_mobilia_semi-mobiliada"}, inplace=True)
-            
-            model_svr = joblib.load('models_ml/model_svr_v1.joblib')
-            preco_previsto = model_svr.predict(x)
-        except Exception as err:
-            print(err)
-        #self.create(data_predict, preco_previsto)
+            model_path = 'models_ml/model_svr_v1.joblib'
+            if not os.path.exists(model_path):
+                raise ModelUnavailable
+        except (ValueError, KeyError):
+            raise Incompatibility
+        
+        model_svr = joblib.load(model_path)
+        preco_previsto = model_svr.predict(x)
+
+        self.create(_data_predict, preco_previsto, user_id)
+
         return{
             "preco_previsto": f"{_format_brl(float(preco_previsto))}"
         }
 
-    def create (self, data_predict: ModelSchemaPost, preco_previsto: float):
-        ...
+    def create (self, data_predict: dict, preco_previsto: float, user_id: int):
+
+        _data_predict = data_predict.copy()
+        _data_predict['preco_previsto'] = preco_previsto
+        _data_predict['user_id'] = user_id
+        return self.repository.create(_data_predict)

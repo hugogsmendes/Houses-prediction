@@ -25,3 +25,15 @@ class Unauthorized (HTTPException):
     def __init__(self, detail: str = "Não autentificado"):
         self.detail = detail
         super().__init__(status_code=status.HTTP_401_UNAUTHORIZED, detail=self.detail)
+
+class ModelUnavailable (HTTPException):
+
+    def __init__(self, detail: str = "Modelo Indisponível"):
+        self.detail = detail
+        super().__init__(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=self.detail)
+
+class Incompatibility (HTTPException):
+
+    def __init__(self, detail: str = "Entrada inválida"):
+        self.detail = detail
+        super().__init__(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=self.detail)

@@ -65,5 +65,10 @@ class User_Service:
             "refresh_token": refresh_token,
             "token_type": "Bearer"
         }
+    
+    def return_id_by_username (self, username: str) -> int:
+
+        user = self.repository.find_by_username(username)
+        return user.id
 
 
