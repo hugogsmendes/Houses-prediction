@@ -8,6 +8,9 @@ BinaryFlag = Annotated[
 ]
 
 class ModelSchemaPost (BaseModel):
+
+    model_config = ConfigDict(from_attributes=True)
+    
     area: float
     quartos: int
     banheiros: int
@@ -22,12 +25,9 @@ class ModelSchemaPost (BaseModel):
     status_mobilia_sem_mobilia: BinaryFlag
     status_mobilia_semi_mobiliada: BinaryFlag
 
-    class Config:
-        from_attributes = True
 
 class PredictPriceResponse (BaseModel):
+    
+    model_config = ConfigDict(from_attributes=True)
 
     preco_previsto: str
-
-    class Config:
-        from_attributes = True

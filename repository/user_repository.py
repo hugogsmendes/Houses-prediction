@@ -18,7 +18,7 @@ class User_Repository:
         self.session.refresh(new_user)
         return new_user
     
-    def list_all (self):
+    def list_all (self) -> list[User]:
         return self.session.query(User).all()
     
     def delete (self, user:User) -> None:

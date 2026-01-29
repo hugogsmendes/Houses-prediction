@@ -1,79 +1,84 @@
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, ConfigDict
 from datetime import date
 
 class UserSchemaPost(BaseModel):
 
+    model_config = ConfigDict(from_attributes=True)
+
     username: str
     password: str
-    class Config:
-        from_attributes = True
+
 
 class UserAdminSchemaPost(BaseModel):
+
+    model_config = ConfigDict(from_attributes=True)
 
     username: str
     password: str
     is_admin: bool = False
-    class Config:
-        from_attributes = True
+
 
 class UserSchemaResponse (BaseModel):
+
+    model_config = ConfigDict(from_attributes=True)
 
     username: str
     is_activate: bool
     is_admin: bool
     create_at : date
-    class Config:
-        from_attributes = True
+
 
 class UserSchemaLogin (BaseModel):
 
+    model_config = ConfigDict(from_attributes=True)
+
     username:str
     password:str
-    class Config:
-        from_attributes = True
+
 class UserCreate (BaseModel):
+
+    model_config = ConfigDict(from_attributes=True)
 
     message: str
     user: UserSchemaResponse
-    class Config:
-        from_attributes = True
+    
 
 class UserLogin (BaseModel):
+
+    model_config = ConfigDict(from_attributes=True)
     
     message: str
     access_token: str
     refresh_token: str
     token_type: str
     user: UserSchemaResponse
-    class Config:
-        from_attributes = True
+
 
 class UserSchemaDelete (BaseModel):
 
+    model_config = ConfigDict(from_attributes=True)
+
     username: str
-    class Config:
-        from_attributes = True
+
 
 class UserDelete (BaseModel):
 
+    model_config = ConfigDict(from_attributes=True)
+
     message: str
 
-    class Config:
-        from_attributes = True
 
 class RefreshToken (BaseModel):
 
+    model_config = ConfigDict(from_attributes=True)
+
     refresh_token:str
 
-    class Config:
-        from_attributes = True
 
 class TokenJWT (BaseModel):
+    
+    model_config = ConfigDict(from_attributes=True)
 
     access_token: str
     refresh_token: str
     token_type: str
-
-    class Config:
-        from_attributes = True

@@ -8,7 +8,7 @@ class User_Service:
     def __init__(self, repository:User_Repository):
         self.repository = repository
     
-    def create_user (self, user_post:UserSchemaPost | UserAdminSchemaPost) -> UserCreate:
+    def create_user (self, user_post: UserSchemaPost | UserAdminSchemaPost) -> UserCreate:
         user = self.repository.find_by_username(user_post.username)
 
         if user:
@@ -16,10 +16,8 @@ class User_Service:
         is_admin = getattr(user_post, "is_admin", False) # acessa dinamicamente um valor de uma atributo de um objeto
         user_create = self.repository.create(user_post, is_admin)
         
-        return{
-            'message': 'Usuário criado com sucesso',
-            'user': user_create
-            }
+        return UserCreate(message='Usuário criado com sucesso', 
+                          user=user_create)
     
     def login (self, user_login:UserSchemaLogin) -> UserLogin:
 
@@ -31,13 +29,11 @@ class User_Service:
         access_token = create_access_token(user.username)
         refresh_token = create_refresh_token(user.username)
 
-        return {
-            "message": "Login realizado com sucesso",
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "token_type": "Bearer",
-            "user": user
-        }
+        return UserLogin(message='Login realizado com sucesso',
+                         access_token=access_token,
+                         refresh_token=refresh_token,
+                         token_type='Bearer',
+                         user=user)
 
     def list_all (self) -> list[UserSchemaResponse]:
         return self.repository.list_all()
@@ -60,11 +56,9 @@ class User_Service:
         access_token = create_access_token(username)
         refresh_token = create_refresh_token(username)
 
-        return {
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "token_type": "Bearer"
-        }
+        return TokenJWT(access_token=access_token,
+                        refresh_token=refresh_token,
+                        token_type='Bearer')
     
     def return_id_by_username (self, username: str) -> int:
 

@@ -31,11 +31,11 @@ class Model_Service:
         preco_previsto = model_svr.predict(x)
 
         self.create(_data_predict, preco_previsto, user_id)
+        
+        preco_previsto = _format_brl(float(preco_previsto))
 
-        return{
-            "preco_previsto": f"{_format_brl(float(preco_previsto))}"
-        }
-
+        return PredictPriceResponse(preco_previsto=preco_previsto)
+    
     def create (self, data_predict: dict, preco_previsto: float, user_id: int):
 
         _data_predict = data_predict.copy()
