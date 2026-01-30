@@ -3,7 +3,7 @@ import joblib
 import os
 from utils.exceptions import ModelUnavailable, Incompatibility
 import pandas as pd
-from schemas.model import ModelSchemaPost, PredictPriceResponse
+from schemas.model import ModelSchemaPost, PredictPriceResponse, PredictionResponse
 
 def _format_brl(valor: float) -> str:
     # 1234.56 -> "1.234,56"
@@ -42,3 +42,7 @@ class Model_Service:
         _data_predict['preco_previsto'] = preco_previsto
         _data_predict['user_id'] = user_id
         return self.repository.create(_data_predict)
+    
+    def high_price (self) -> PredictionResponse:
+        
+        return self.repository.high_price()

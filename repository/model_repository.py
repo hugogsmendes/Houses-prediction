@@ -12,3 +12,9 @@ class Model_Repository:
         self.session.commit()
         self.session.refresh(new_prediction)
         return new_prediction
+    
+    def high_price (self) -> Prediction:
+
+        house_price_high = self.session.query(Prediction).order_by(Prediction.preco_previsto.desc()).first()
+
+        return house_price_high
