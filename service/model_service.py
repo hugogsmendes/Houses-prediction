@@ -21,7 +21,7 @@ class Model_Service:
         _data_predict = data_predict.model_dump() # transforma para dicionário
         try:
             x = pd.DataFrame([_data_predict])
-            model_path = 'models_ml/model_svr_v1.joblib'
+            model_path = 'models_ml/model_mlp_v1.joblib'
             if not os.path.exists(model_path):
                 raise ModelUnavailable
         except (ValueError, KeyError):
