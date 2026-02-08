@@ -23,7 +23,7 @@ def list_users (tokens: dict):
     try:
 
         response = requests.get(url,
-                                headers = {"Authorization": f"Bearer {tokens["access_token"]}"},
+                                headers = {"Authorization": f"Bearer {tokens['access_token']}"},
                                 timeout = 10)
         
         response.raise_for_status()
@@ -52,11 +52,12 @@ with st.sidebar:
         st.caption("Tokens guardados na sessão.")
 
         if st.button("Listar usuários"):
-            result = list_users(st.session_state.tokens)
-            if "error" in result:
-                st.session_state.users = None
-            else:
-                st.session_state.users = result
+            with st.spinner("Buscando os usuários"):
+                result = list_users(st.session_state.tokens)
+                if "error" in result:
+                    st.session_state.users = None
+                else:
+                    st.session_state.users = result
 
 
         if st.button("Logout"):
@@ -66,7 +67,7 @@ with st.sidebar:
             st.session_state.users = None
             st.rerun()
     else:
-        st.title("🔒 Login")
+        st.title("🔒")
         st.markdown("---")
 
         username = st.text_input("Username", type = "default", key = "username")
@@ -77,19 +78,20 @@ with st.sidebar:
             st.warning("Preencha o username e a senha")
 
         if button and (username and password):
-            result = login(username, password)
+            with st.spinner("Realizando o login"):
+                result = login(username, password)
 
-            if "error" in result:
-                st.sidebar.error("Credencias inválidas")
-            else:
-                st.sidebar.success("Login OK")
-                st.session_state.tokens = {
-                    "access_token": result["access_token"],
-                    "refresh_token": result["refresh_token"]
-                }
-                st.session_state.logged_in = True
-                st.session_state.current_user = username
-                st.rerun()
+                if "error" in result:
+                    st.sidebar.error("Credencias inválidas")
+                else:
+                    st.sidebar.success("Login OK")
+                    st.session_state.tokens = {
+                        "access_token": result["access_token"],
+                        "refresh_token": result["refresh_token"]
+                    }
+                    st.session_state.logged_in = True
+                    st.session_state.current_user = username
+                    st.rerun()
         
 
     st.markdown("---")
