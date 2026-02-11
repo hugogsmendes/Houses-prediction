@@ -3,11 +3,28 @@ import requests
 
 st.set_page_config(page_title = "House Prediction", page_icon = "🤟🏼", layout = "wide")
 
-api_url = st.secrets["API_URL"]
+API_URL = "https://api-houses-prediction.onrender.com"
+
+def register (username: str, password: str):
+    url = f"{API_URL}/v1/register"
+    try:
+
+        response = requests.post(url, 
+                                json = {"username": username, "password": password},
+                                headers = {"Content-Type": "application/json",
+                                           "accept": "application/json"},
+                                timeout = 10)
+        
+        response.raise_for_status()
+        return response.json()
+    
+    except Exception as err:
+        return {"error": str(err)}
 
 def login (username: str, password: str):
-    url = f"{api_url}/v1/login"
+    url = f"{API_URL}/v1/login"
     try:
+
         response = requests.post(url, 
                                 data = {"username": username, "password": password},
                                 headers = {"Content-Type": "application/x-www-form-urlencoded"},
@@ -20,7 +37,7 @@ def login (username: str, password: str):
         return {"error": str(err)}
     
 def list_users (tokens: dict):
-    url = f"{api_url}/v1/admin/list"
+    url = f"{API_URL}/v1/admin/list"
 
     try:
 
@@ -58,6 +75,7 @@ with st.sidebar:
                 result = list_users(st.session_state.tokens)
                 if "error" in result:
                     st.session_state.users = None
+                    st.sidebar.error("Você não tem permissão para usar essa função")
                 else:
                     st.session_state.users = result
 
@@ -74,12 +92,13 @@ with st.sidebar:
 
         username = st.text_input("Username", type = "default", key = "username")
         password = st.text_input("Senha", type = "password")
-        button = st.button("Login")
+        button_login = st.button("Login")
+        button_register = st.button("Register")
         
-        if button and not(username and password):
+        if button_login and not(username and password):
             st.warning("Preencha o username e a senha")
 
-        if button and (username and password):
+        if button_login and (username and password):
             with st.spinner("Realizando o login"):
                 result = login(username, password)
 
@@ -94,8 +113,16 @@ with st.sidebar:
                     st.session_state.logged_in = True
                     st.session_state.current_user = username
                     st.rerun()
-        
 
+        if button_register and (username and password):
+            with st.spinner("Criando o usuario"):
+                result = register(username, password)
+
+                if "error" in result:
+                    st.sidebar.error("Usuario já registrado")
+                else:
+                    st.sidebar.success("Usuario criado com sucesso")
+        
     st.markdown("---")
 
 

@@ -13,7 +13,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 REFRESH_TOKEN_EXPIRE_DAYS= int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # objeto responsável pelo hash das senhas
-ouath2_schema = OAuth2PasswordBearer(tokenUrl="api/v1/login") # dependencia que extrai o token do header e passa pra função
+ouath2_schema = OAuth2PasswordBearer(tokenUrl="v1/login") # dependencia que extrai o token do header e passa pra função
 
 def hash_password(password:str): # função para hash de senhas
     return bcrypt_context.hash(password)
