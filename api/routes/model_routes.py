@@ -5,7 +5,7 @@ from service.model_service import Model_Service
 from service.user_service import User_Service
 from schemas.model import ModelSchemaPost, PredictionResponse
 
-model_route = APIRouter(prefix="/api/v1/model", tags=["model"])
+model_route = APIRouter(prefix="/v1/model", tags=["model"])
 
 @model_route.post("/predict", status_code=201)
 @limiter.limit("10/minute")

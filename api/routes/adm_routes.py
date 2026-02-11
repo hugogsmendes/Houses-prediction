@@ -4,7 +4,7 @@ from schemas.user import UserDelete, UserSchemaDelete, UserSchemaResponse, UserC
 from service.user_service import User_Service
 from main import limiter
 
-adm_router = APIRouter(prefix="/api/v1/admin", tags=["admin"], dependencies=[Depends(get_user_adm)])
+adm_router = APIRouter(prefix="/v1/admin", tags=["admin"], dependencies=[Depends(get_user_adm)])
 
 @adm_router.delete("/delete", status_code=200, response_model=UserDelete)
 @limiter.limit("10/minute")

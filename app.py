@@ -4,7 +4,7 @@ import requests
 st.set_page_config(page_title = "House Prediction", page_icon = "🤟🏼", layout = "wide")
 
 def login (username: str, password: str):
-    url = "https://api-houses-prediction.onrender.com/api/v1/login"
+    url = "https://api-houses-prediction.onrender.com/v1/login"
     try:
         response = requests.post(url, 
                                 data = {"username": username, "password": password},
@@ -18,7 +18,7 @@ def login (username: str, password: str):
         return {"error": str(err)}
     
 def list_users (tokens: dict):
-    url = "https://api-houses-prediction.onrender.com/api/v1/admin/list"
+    url = "https://api-houses-prediction.onrender.com/v1/admin/list"
 
     try:
 

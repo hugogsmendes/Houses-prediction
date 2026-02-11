@@ -4,7 +4,7 @@ from utils.dependencies import get_user_service, verify_refresh_token, get_user
 from schemas.user import UserSchemaPost, UserCreate, UserLogin, RefreshToken, TokenJWT
 from fastapi.security import OAuth2PasswordRequestForm
 
-user_router = APIRouter(prefix="/api/v1", tags=["user"])
+user_router = APIRouter(prefix="/v1", tags=["user"])
 
 @user_router.post("/register", response_model=UserCreate, status_code=201)
 async def create (user_post: UserSchemaPost, service: User_Service = Depends(get_user_service)):
