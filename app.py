@@ -95,7 +95,7 @@ with st.sidebar:
         button_login = st.button("Login")
         button_register = st.button("Register")
         
-        if button_login and not(username and password):
+        if (button_login or button_register) and not(username and password):
             st.warning("Preencha o username e a senha")
 
         if button_login and (username and password):
