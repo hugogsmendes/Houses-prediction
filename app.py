@@ -55,6 +55,21 @@ def list_users (tokens: dict):
     except Exception as err:
         return {"error": str(err)}
     
+def delete_user (username: str, tokens: dict):
+    url = f"{API_URL}/v1/admin/delete"
+
+    try:
+
+        response = requests.delete(url,
+                                json = {"username": username},
+                                headers = {"Authorization": f"Bearer {tokens['access_token']}"},
+                                timeout = 10)
+        response.raise_for_status()
+        return response.json()
+    
+    except Exception as err:
+        return {"error": str(err)}
+    
 if "tokens" not in st.session_state:
     st.session_state.tokens = None
 if "logged_in" not in st.session_state:
@@ -141,7 +156,47 @@ if st.session_state.logged_in:
 
     if st.session_state.users is not None:
         st.subheader("👥 Usuários")
-        if isinstance(st.session_state.users, list):
-            st.dataframe(st.session_state.users, width = "stretch")
-        else:
-            st.json(st.session_state.users)
+
+        users = st.session_state.users if isinstance(st.session_state.users, list) else []
+            # Cabeçalho
+        h1, h2 = st.columns([6, 1])
+        h1.markdown("**Usuário**")
+        h2.markdown("**Ações**")
+
+        st.markdown("---")
+
+        for u in users:
+        # tenta suportar lista de dicts ou lista de strings
+            username = u.get("username") if isinstance(u, dict) else str(u)
+
+            c1, c2 = st.columns([6, 1])
+            c1.write(username)
+
+            # Opção 1 (sempre funciona): emoji
+            if c2.button("🗑️", key=f"del_{username}", help=f"Deletar {username}"):
+            # confirmação simples
+                st.session_state["confirm_delete"] = username
+
+        # Confirmação fora do loop (evita múltiplos botões conflitando)
+        if st.session_state.get("confirm_delete"):
+            target = st.session_state["confirm_delete"]
+            st.warning(f"Confirmar exclusão do usuário **{target}**?")
+
+            b1, b2 = st.columns([1, 1])
+            if b1.button("Confirmar", key="confirm_del_btn"):
+
+                result = delete_user(target, st.session_state.tokens)
+
+                if "error" in result:
+                    st.error("Você não tem permissão para usar essa função")
+                else:
+                    st.success("Usuário deletado")
+                    # atualiza a lista após deletar
+                    st.session_state["confirm_delete"] = None
+                    st.session_state.users = None
+                    st.rerun()
+
+            if b2.button("Cancelar", key="cancel_del_btn"):
+                st.session_state["confirm_delete"] = None
+                st.rerun()
+
