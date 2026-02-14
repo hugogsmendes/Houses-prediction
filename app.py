@@ -1,9 +1,13 @@
 import streamlit as st
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 st.set_page_config(page_title = "House Prediction", page_icon = "🤟🏼", layout = "wide")
 
-API_URL = "https://api-houses-prediction.onrender.com"
+API_URL = st.secrets("API_URL")
 
 def register (username: str, password: str):
     url = f"{API_URL}/v1/register"
