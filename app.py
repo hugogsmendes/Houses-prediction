@@ -2,12 +2,14 @@ import streamlit as st
 import requests
 import os
 from dotenv import load_dotenv
+import pandas as pd
 
 load_dotenv()
 
 st.set_page_config(page_title = "House Prediction", page_icon = "🤟🏼", layout = "wide")
 
 API_URL = st.secrets["API_URL"]
+
 
 def register (username: str, password: str):
     url = f"{API_URL}/v1/register"
@@ -40,13 +42,14 @@ def login (username: str, password: str):
     except Exception as err:
         return {"error": str(err)}
     
-def list_users (tokens: dict):
+@st.cache_data(ttl = 30)   
+def list_users (access_token: str):
     url = f"{API_URL}/v1/admin/list"
 
     try:
 
         response = requests.get(url,
-                                headers = {"Authorization": f"Bearer {tokens['access_token']}"},
+                                headers = {"Authorization": f"Bearer {access_token}"},
                                 timeout = 10)
         
         response.raise_for_status()
@@ -69,6 +72,24 @@ def delete_user (username: str, tokens: dict):
     
     except Exception as err:
         return {"error": str(err)}
+
+st.cache_data(ttl = 30)
+def get_df (access_token: str):
+
+    url = f"{API_URL}/v1/model/df"
+
+    try:
+
+        response = requests.get(url,
+                                headers = {"Authorization": f"Bearer {access_token}"},
+                                timeout = 10)
+        response.raise_for_status()
+        return response.content
+    
+    except Exception as err:
+        return {"error": str(err)}
+
+
     
 if "tokens" not in st.session_state:
     st.session_state.tokens = None
@@ -91,15 +112,24 @@ with st.sidebar:
 
         if st.button("Listar usuários"):
             with st.spinner("Buscando os usuários"):
-                result = list_users(st.session_state.tokens)
+                result = list_users(st.session_state.tokens["access_token"])
                 if "error" in result:
                     st.session_state.users = None
                     st.sidebar.error("Você não tem permissão para usar essa função")
                 else:
                     st.session_state.users = result
 
+        csv_bytes = get_df(st.session_state.tokens["access_token"])
+        try:
+            st.download_button("Download Dataset",
+                              data = csv_bytes,
+                              file_name = "dataset.csv",
+                              mime = "text/csv")
+        except Exception:
+            st.sidebar.error("Não foi possível baixar o dataset no momento")
 
         if st.button("Logout"):
+            list_users.clear()
             st.session_state.tokens = None
             st.session_state.logged_in = False
             st.session_state.current_user = None
@@ -153,9 +183,15 @@ if st.session_state.logged_in:
 
     st.title("🏠 Project Houses Predicition")
     st.subheader("🖩 Inferência do preço de uma casa através de uma API FastAPI")
+    
 
     if st.session_state.users is not None:
         st.subheader("👥 Usuários")
+        button_back = st.button("Voltar")
+
+        if button_back:
+            st.session_state.users = None
+            st.rerun()
 
         users = st.session_state.users if isinstance(st.session_state.users, list) else []
             # Cabeçalho
@@ -191,7 +227,7 @@ if st.session_state.logged_in:
                     st.error("Você não tem permissão para usar essa função")
                 else:
                     st.success("Usuário deletado")
-                    # atualiza a lista após deletar
+                    list_users.clear()
                     st.session_state["confirm_delete"] = None
                     st.session_state.users = None
                     st.rerun()
@@ -199,4 +235,5 @@ if st.session_state.logged_in:
             if b2.button("Cancelar", key="cancel_del_btn"):
                 st.session_state["confirm_delete"] = None
                 st.rerun()
+    
 
