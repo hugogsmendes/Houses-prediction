@@ -3,13 +3,14 @@ import requests
 import os
 from dotenv import load_dotenv
 import pandas as pd
+import io
 
 load_dotenv()
 
 st.set_page_config(page_title = "House Prediction", page_icon = "🤟🏼", layout = "wide")
 
-API_URL = st.secrets["API_URL"]
-
+# API_URL = st.secrets["API_URL"]
+API_URL = "https://api-houses-prediction.onrender.com"
 
 def register (username: str, password: str):
     url = f"{API_URL}/v1/register"
@@ -99,6 +100,10 @@ if "current_user" not in st.session_state:
     st.session_state.current_user = None
 if "users" not in st.session_state:
     st.session_state.users =  None
+if "csv_bytes" not in st.session_state:
+    st.session_state.csv_bytes = None
+if "df" not in st.session_state:
+    st.session_state.df = None
 
 
 with st.sidebar:
@@ -117,16 +122,21 @@ with st.sidebar:
                     st.session_state.users = None
                     st.sidebar.error("Você não tem permissão para usar essa função")
                 else:
+                    st.session_state.df = None
                     st.session_state.users = result
-
-        csv_bytes = get_df(st.session_state.tokens["access_token"])
         try:
             st.download_button("Download Dataset",
-                              data = csv_bytes,
+                              data = st.session_state.csv_bytes,
                               file_name = "dataset.csv",
                               mime = "text/csv")
         except Exception:
             st.sidebar.error("Não foi possível baixar o dataset no momento")
+
+        if st.button("Exibir Dataframe"):
+            df = pd.read_csv(io.BytesIO(st.session_state.csv_bytes), sep = ",")
+            st.session_state.users = None
+            st.session_state.df = df
+
 
         if st.button("Logout"):
             list_users.clear()
@@ -134,6 +144,8 @@ with st.sidebar:
             st.session_state.logged_in = False
             st.session_state.current_user = None
             st.session_state.users = None
+            st.session_state.csv_bytes = None
+            st.session_state.df = None
             st.rerun()
     else:
         st.title("🔒")
@@ -161,7 +173,9 @@ with st.sidebar:
                     }
                     st.session_state.logged_in = True
                     st.session_state.current_user = username
+                    st.session_state.csv_bytes = get_df(st.session_state.tokens["access_token"])
                     st.rerun()
+
 
         if button_register and (username and password):
             with st.spinner("Criando o usuario"):
@@ -183,7 +197,12 @@ if st.session_state.logged_in:
 
     st.title("🏠 Project Houses Predicition")
     st.subheader("🖩 Inferência do preço de uma casa através de uma API FastAPI")
+
+    if st.session_state.users is None:
+        ...
     
+    if st.session_state.df is not None:
+        st.dataframe(st.session_state.df)
 
     if st.session_state.users is not None:
         st.subheader("👥 Usuários")
