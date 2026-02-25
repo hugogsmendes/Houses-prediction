@@ -9,8 +9,8 @@ load_dotenv()
 
 st.set_page_config(page_title = "House Prediction", page_icon = "🤟🏼", layout = "wide")
 
-# API_URL = st.secrets["API_URL"]
-API_URL = "https://api-houses-prediction.onrender.com"
+API_URL = st.secrets["API_URL"]
+
 
 def register (username: str, password: str):
     url = f"{API_URL}/v1/register"
@@ -199,8 +199,50 @@ if st.session_state.logged_in:
     st.subheader("🖩 Inferência do preço de uma casa através de uma API FastAPI")
 
     if st.session_state.users is None:
-        ...
-    
+
+        with st.form("predict_form", clear_on_submit=False):
+            st.subheader("🔮 Previsão")
+            c1, c2, c3 = st.columns(3)
+
+            with c1:
+                area = st.number_input("Area", min_value=0, step=1, value=200)
+                quartos = st.number_input("Quartos", min_value=0, step=1, value=2)
+                banheiros = st.number_input("Banheiros", min_value=0, step=1, value=1)
+                andares = st.number_input("Andares", min_value=0, step=1, value=1)
+
+            with c2:
+                acesso_rodovia = st.selectbox("Acesso à rodovia (0/1)", [0, 1], index=0)
+                quarto_hospede = st.selectbox("Quarto hóspede (0/1)", [0, 1], index=0)
+                porao = st.selectbox("Porão (0/1)", [0, 1], index=0)
+                aquecimento_agua = st.selectbox("Aquecimento de água (0/1)", [0, 1], index=0)
+
+            with c3:
+                ar_condicionado = st.selectbox("Ar condicionado (0/1)", [0, 1], index=0)
+                vagas_estacionamento = st.number_input("Vagas de estacionamento", min_value=0, step=1, value=1)
+                area_preferencial = st.selectbox("Área preferencial (0/1)", [0, 1], index=0)
+                status_mobilia_sem_mobilia = st.selectbox("Status mobília: sem mobília (0/1)", [0, 1], index=1)
+                status_mobilia_semi_mobiliada = st.selectbox("Status mobília: semi mobiliada (0/1)", [0, 1], index=0)
+
+
+            submitted = st.form_submit_button("Prever")
+
+        if submitted:
+            payload = {
+                "area": int(area),
+                "quartos": int(quartos),
+                "banheiros": int(banheiros),
+                "andares": int(andares),
+                "acesso_rodovia": int(acesso_rodovia),
+                "quarto_hospede": int(quarto_hospede),
+                "porao": int(porao),
+                "aquecimento_agua": int(aquecimento_agua),
+                "ar_condicionado": int(ar_condicionado),
+                "vagas_estacionamento": int(vagas_estacionamento),
+                "area_preferencial": int(area_preferencial),
+                "status_mobilia_sem_mobilia": int(status_mobilia_sem_mobilia),
+                "status_mobilia_semi_mobiliada": int(status_mobilia_semi_mobiliada),
+            }
+
     if st.session_state.df is not None:
         st.dataframe(st.session_state.df)
 
