@@ -43,7 +43,7 @@ def login (username: str, password: str):
     except Exception as err:
         return {"error": str(err)}
     
-@st.cache_data(ttl = 30)   
+@st.cache_data(ttl = 30, show_spinner = False)   
 def list_users (access_token: str):
     url = f"{API_URL}/v1/admin/list"
 
@@ -74,7 +74,7 @@ def delete_user (username: str, tokens: dict):
     except Exception as err:
         return {"error": str(err)}
 
-st.cache_data(ttl = 30)
+st.cache_data(ttl = 30, show_spinner = False)
 def get_df (access_token: str):
 
     url = f"{API_URL}/v1/model/df"
