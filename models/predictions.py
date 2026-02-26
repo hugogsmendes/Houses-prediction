@@ -10,7 +10,7 @@ class Prediction (Base):
     area = Column("area", Float)
     quartos = Column("quartos", Integer)
     banheiros = Column("banheiros", Integer)
-    andares = Column("andates", Integer)
+    andares = Column("andares", Integer)
     acesso_rodovia = Column("acesso_rodovia", Integer) # Variável binária
     quarto_hospede = Column("quarto_hospede", Integer) # Variável binária
     porao = Column("porao", Integer) # Variável binária

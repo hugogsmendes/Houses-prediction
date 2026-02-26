@@ -28,11 +28,11 @@ class Model_Service:
             raise Incompatibility
         
         model_svr = joblib.load(model_path)
-        preco_previsto = model_svr.predict(x)
+        preco_previsto = float(model_svr.predict(x))
 
         self.create(_data_predict, preco_previsto, user_id)
         
-        preco_previsto = _format_brl(float(preco_previsto))
+        preco_previsto = _format_brl(preco_previsto)
 
         return PredictPriceResponse(preco_previsto=preco_previsto)
     

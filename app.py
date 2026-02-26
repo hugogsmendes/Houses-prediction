@@ -12,6 +12,7 @@ st.set_page_config(page_title = "House Prediction", page_icon = "🤟🏼", layo
 API_URL = st.secrets["API_URL"]
 
 
+
 def register (username: str, password: str):
     url = f"{API_URL}/v1/register"
     try:
@@ -86,6 +87,22 @@ def get_df (access_token: str):
                                 timeout = 10)
         response.raise_for_status()
         return response.content
+    
+    except Exception as err:
+        return {"error": str(err)}
+
+def predict(access_token: str, payload: dict):
+
+    url = f"{API_URL}/v1/model/predict"
+
+    try:
+
+        response = requests.post(url,
+                                 json = payload,
+                                 headers = {"Authorization": f"Bearer {access_token}"},
+                                 timeout = 10)
+        response.raise_for_status()
+        return response.json()
     
     except Exception as err:
         return {"error": str(err)}
@@ -198,7 +215,7 @@ if st.session_state.logged_in:
     st.title("🏠 Project Houses Predicition")
     st.subheader("🖩 Inferência do preço de uma casa através de uma API FastAPI")
 
-    if st.session_state.users is None:
+    if st.session_state.users is None and st.session_state.df is None:
 
         with st.form("predict_form", clear_on_submit=False):
             st.subheader("🔮 Previsão")
@@ -242,9 +259,21 @@ if st.session_state.logged_in:
                 "status_mobilia_sem_mobilia": int(status_mobilia_sem_mobilia),
                 "status_mobilia_semi_mobiliada": int(status_mobilia_semi_mobiliada),
             }
+            result = predict(st.session_state.tokens["access_token"], payload)
+            if "error" in result:
+                st.error(result["error"])
+            else:
+                st.success(f"Preço previsto: {result["preco_previsto"]}")
+
 
     if st.session_state.df is not None:
         st.dataframe(st.session_state.df)
+
+        button_back = st.button("Voltar")
+
+        if button_back:
+            st.session_state.df = None
+            st.rerun()
 
     if st.session_state.users is not None:
         st.subheader("👥 Usuários")
