@@ -100,7 +100,7 @@ def predict(access_token: str, payload: dict):
         response = requests.post(url,
                                  json = payload,
                                  headers = {"Authorization": f"Bearer {access_token}"},
-                                 timeout = 10)
+                                 timeout = 30)
         response.raise_for_status()
         return response.json()
     
